@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>AL COSMÉTICOS LTDA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="header">AL COSMÉTICOS LTDA – Controle de Estoque</div>
+    <div class="sidebar">
+        <a href="{{ url_for('index') }}">HOME</a>
+        <a href="{{ url_for('visualizar') }}">ESTOQUE</a>
+        <a href="{{ url_for('inserir') }}#inserir">INSERIR PRODUTOS</a>
+        <a href="{{ url_for('remover') }}#remover">REMOVER PRODUTOS</a>
+    </div>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

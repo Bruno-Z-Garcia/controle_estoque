@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="content">
+        {% if mensagem %}
+            <div class="mensagem {{ tipo_mensagem }}">{{ mensagem }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <label>PRODUTO:</label>
+            <select name="produto_id" required>
+                {% for produto in produtos %}
+                    <option value="{{ produto[0] }}">{{ produto[1] }} ({{ produto[2] }} em estoque)</option>
+                {% endfor %}
+            </select>
+
+            <label>QUANTIDADE A REMOVER:</label>
+            <input type="number" name="quantidade" min="1" required>
+
+            <button type="submit">REMOVER</button>
+        </form>
+    </div>
+
+    <script>
+        window.onload = function () {
+            const msg = document.querySelector('.mensagem');
+            if (msg) {
+                setTimeout(() => msg.style.display = 'none', 3000);
+            }
+        };
+    </script>
+{% endblock %}

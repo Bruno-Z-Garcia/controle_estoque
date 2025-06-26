@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="resumo" style="text-align: center; font-weight: bold; font-size: 18px; margin-bottom: 20px;">
+        Quantidade total em estoque: {{ total_qtd }}<br>
+        Valor total em estoque: R$ {{ total_valor }}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Fornecedor</th>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Preço Unitário</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in produtos %}
+                {% if item[2] > 0 %}
+                    <tr>
+                        <td>{{ item[0] }}</td>
+                        <td>{{ item[1] }}</td>
+                        <td>{{ item[2] }}</td>
+                        <td>R$ {{ "%.2f"|format(item[3]) }}</td>
+                        <td>R$ {{ "%.2f"|format(item[2]*item[3]) }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
