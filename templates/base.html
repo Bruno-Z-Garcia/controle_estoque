@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>AL COSMÉTICOS LTDA</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div class="header">AL COSMÉTICOS LTDA – Controle de Estoque</div>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    
+    <!-- Adicione essa linha abaixo para ativar os ícones Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-pap0O3J7DcM9rh0hJc7r1EGvraW4l1i4YGLY4M0FEWGHr6l+IQgVpM6LMZujbmPyx2lZSl6MvAksd5e+xD1b4g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body>
+    <div class="header">AL COSMÉTICOS LTDA</div>
     <div class="sidebar">
-        <a href="{{ url_for('index') }}">HOME</a>
-        <a href="{{ url_for('visualizar') }}">ESTOQUE</a>
-        <a href="{{ url_for('inserir') }}#inserir">INSERIR PRODUTOS</a>
-        <a href="{{ url_for('remover') }}#remover">REMOVER PRODUTOS</a>
+      <a href="{{ url_for('index') }}">HOME</a>
+      <a href="{{ url_for('visualizar') }}">ESTOQUE</a>
+      <a href="{{ url_for('inserir') }}#inserir">INSERIR PRODUTOS</a>
+      <a href="{{ url_for('remover') }}#remover">REMOVER PRODUTOS</a>
     </div>
-    <div class="content">
-        {% block content %}{% endblock %}
-    </div>
-</body>
+    <div class="content">{% block content %}{% endblock %}</div>
+  </body>
 </html>

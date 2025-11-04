@@ -1,32 +1,52 @@
 {% extends 'base.html' %}
-
 {% block content %}
-    <div class="content">
-        {% if mensagem %}
-            <div class="mensagem {{ tipo_mensagem }}">{{ mensagem }}</div>
-        {% endif %}
+<div class="content">
+  {% if mensagem %}
+    <div class="mensagem {{ tipo_mensagem }}">{{ mensagem }}</div>
+  {% endif %}
 
-        <form method="POST">
-            <label>PRODUTO:</label>
-            <select name="produto_id" required>
-                {% for produto in produtos %}
-                    <option value="{{ produto[0] }}">{{ produto[1] }} ({{ produto[2] }} em estoque)</option>
-                {% endfor %}
-            </select>
+  <form method="POST">
+    <label>PRODUTO:</label>
+    <select name="produto_id" required>
+      {% for produto in produtos %}
+      <option value="{{ produto[0] }}">{{ produto[1] }} ({{ produto[2] }}) - {{ produto[3] }} em estoque</option>
+      {% endfor %}
+    </select>
 
-            <label>QUANTIDADE A REMOVER:</label>
-            <input type="number" name="quantidade" min="1" required>
+    <label>QUANTIDADE A REMOVER:</label>
+    <input type="number" name="quantidade" min="1" required />
 
-            <button type="submit">REMOVER</button>
-        </form>
-    </div>
+    <!-- Botão com classe específica 'remover' -->
+    <button type="submit" class="button remover">
+      <span>REMOVER</span>
+      <div class="icon">
+        <i class="fa fa-remove"></i>
+        <i class="fa fa-check"></i>
+      </div>
+    </button>
+  </form>
+</div>
 
-    <script>
-        window.onload = function () {
-            const msg = document.querySelector('.mensagem');
-            if (msg) {
-                setTimeout(() => msg.style.display = 'none', 3000);
-            }
-        };
-    </script>
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<script>
+  window.onload = function () {
+    const msg = document.querySelector(".mensagem");
+    const button = document.querySelector(".button.remover");
+
+    if (msg) {
+      setTimeout(() => {
+        msg.style.display = "none";
+      }, 3000);
+    }
+
+    if (button && msg && msg.classList.contains("sucesso")) {
+      button.classList.add("success");
+      setTimeout(() => {
+        button.classList.remove("success");
+      }, 3000);
+    }
+  };
+</script>
 {% endblock %}

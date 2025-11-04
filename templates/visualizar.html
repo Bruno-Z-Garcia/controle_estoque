@@ -1,33 +1,115 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block content %}
+<div class="dashboard-container">
+  <h2>Gráficos de Estoque</h2>
 
-{% block content %}
-    <div class="resumo" style="text-align: center; font-weight: bold; font-size: 18px; margin-bottom: 20px;">
-        Quantidade total em estoque: {{ total_qtd }}<br>
-        Valor total em estoque: R$ {{ total_valor }}
+  <div class="resumo-totais">
+    <div><strong>Total de itens em estoque:</strong> {{ total_qtd }}</div>
+    <div><strong>Valor total do estoque:</strong> R$ {{ total_valor }}</div>
+  </div>
+
+  <div class="graficos">
+    <div class="grafico">
+      <h3>Por Produto</h3>
+      <canvas id="graficoProduto"></canvas>
     </div>
+    <div class="grafico">
+      <h3>Por Fornecedor</h3>
+      <canvas id="graficoFornecedor"></canvas>
+    </div>
+  </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Fornecedor</th>
-                <th>Produto</th>
-                <th>Quantidade</th>
-                <th>Preço Unitário</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in produtos %}
-                {% if item[2] > 0 %}
-                    <tr>
-                        <td>{{ item[0] }}</td>
-                        <td>{{ item[1] }}</td>
-                        <td>{{ item[2] }}</td>
-                        <td>R$ {{ "%.2f"|format(item[3]) }}</td>
-                        <td>R$ {{ "%.2f"|format(item[2]*item[3]) }}</td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-        </tbody>
+  <div class="filtros">
+    <button onclick="ordenarTabela('fornecedor_az')">Ordenar A-Z (Fornecedor)</button>
+    <button onclick="ordenarTabela('mais_caro')">Maior valor unitário</button>
+    <button onclick="ordenarTabela('mais_barato')">Menor valor unitário</button>
+    <button onclick="ordenarTabela('maior_total')">Maior valor total</button>
+    <button onclick="ordenarTabela('menor_total')">Menor valor total</button>
+    <button onclick="ordenarTabela('maior_qtd')">Maior volume em estoque</button>
+    <button onclick="ordenarTabela('menor_qtd')">Menor volume em estoque</button>
+  </div>
+
+  <div class="tabela-container">
+    <table id="tabelaEstoque">
+      <thead>
+        <tr>
+          <th>Fornecedor</th>
+          <th>Produto</th>
+          <th>Quantidade</th>
+          <th>Preço Unitário</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for fornecedor, nome, quantidade, preco in produtos %}
+        <tr>
+          <td>{{ fornecedor }}</td>
+          <td>{{ nome }}</td>
+          <td>{{ quantidade }}</td>
+          <td>R$ {{ '%.2f' | format(preco) }}</td>
+          <td>R$ {{ '%.2f' | format(preco * quantidade) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const graficoProduto = new Chart(document.getElementById('graficoProduto'), {
+      type: 'pie',
+      data: {
+          labels: {{ grafico_produto_labels | tojson }},
+          datasets: [{
+              data: {{ grafico_produto_values | tojson }},
+              backgroundColor: Array.from({length: {{ grafico_produto_labels | length }}}, () =>
+                  '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0'))
+          }]
+      }
+  });
+
+  const graficoFornecedor = new Chart(document.getElementById('graficoFornecedor'), {
+      type: 'pie',
+      data: {
+          labels: {{ grafico_fornecedor_labels | tojson }},
+          datasets: [{
+              data: {{ grafico_fornecedor_values | tojson }},
+              backgroundColor: Array.from({length: {{ grafico_fornecedor_labels | length }}}, () =>
+                  '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0'))
+          }]
+      }
+  });
+
+  function ordenarTabela(tipo) {
+      const tabela = document.getElementById("tabelaEstoque").getElementsByTagName("tbody")[0];
+      const linhas = Array.from(tabela.rows);
+
+      linhas.sort((a, b) => {
+          switch (tipo) {
+              case 'mais_caro':
+                  return parseFloat(b.cells[3].innerText.replace('R$', '').replace(',', '.')) -
+                         parseFloat(a.cells[3].innerText.replace('R$', '').replace(',', '.'));
+              case 'mais_barato':
+                  return parseFloat(a.cells[3].innerText.replace('R$', '').replace(',', '.')) -
+                         parseFloat(b.cells[3].innerText.replace('R$', '').replace(',', '.'));
+              case 'maior_qtd':
+                  return parseInt(b.cells[2].innerText) - parseInt(a.cells[2].innerText);
+              case 'menor_qtd':
+                  return parseInt(a.cells[2].innerText) - parseInt(b.cells[2].innerText);
+              case 'fornecedor_az':
+                  return a.cells[0].innerText.localeCompare(b.cells[0].innerText);
+              case 'maior_total':
+                  return parseFloat(b.cells[4].innerText.replace('R$', '').replace(',', '.')) -
+                         parseFloat(a.cells[4].innerText.replace('R$', '').replace(',', '.'));
+              case 'menor_total':
+                  return parseFloat(a.cells[4].innerText.replace('R$', '').replace(',', '.')) -
+                         parseFloat(b.cells[4].innerText.replace('R$', '').replace(',', '.'));
+              default:
+                  return 0;
+          }
+      });
+
+      linhas.forEach(linha => tabela.appendChild(linha));
+  }
+</script>
 {% endblock %}
